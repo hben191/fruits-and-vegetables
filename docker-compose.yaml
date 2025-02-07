@@ -1,0 +1,53 @@
+services:
+  php:
+    build:
+      context: ./docker/php
+    container_name: php-fpm
+    volumes:
+      - ./:/var/www/app
+    ports:
+      - "9000:9000"
+    networks:
+      - default
+
+  nginx:
+    build:
+      context: ./docker/nginx
+    container_name: nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./:/var/www/app
+    depends_on:
+      - php
+    networks:
+      - default
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: app
+      MYSQL_USER: dbuser
+      MYSQL_PASSWORD: password
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - default
+
+  adminer:
+    image: adminer
+    container_name: adminer
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysql
+    networks:
+      - default
+
+networks:
+  default:
+
+volumes:
+  db_data:
