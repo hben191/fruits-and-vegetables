@@ -6,6 +6,14 @@ use App\Repository\AbstractFoodRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: AbstractFoodRepository::class)]
+#[ORM\InheritanceType('SINGLE_TABLE')]
+#[ORM\DiscriminatorColumn(name: 'type', type: 'string')]
+#[ORM\DiscriminatorMap(
+    [
+        'vegetable' => Vegetable::class,
+        'fruit' => Fruit::class
+    ]
+)]
 abstract class AbstractFood
 {
     #[ORM\Id]
@@ -22,12 +30,16 @@ abstract class AbstractFood
     #[ORM\Column(length: 2)]
     private ?string $unit = null;
 
-    #[ORM\Column(length: 64)]
-    private ?string $type = null;
-
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function setId(int $id): static
+    {
+        $this->id = $id;
+
+        return $this;
     }
 
     public function getName(): ?string
@@ -62,18 +74,6 @@ abstract class AbstractFood
     public function setUnit(string $unit): static
     {
         $this->unit = $unit;
-
-        return $this;
-    }
-
-    public function getType(): ?string
-    {
-        return $this->type;
-    }
-
-    public function setType(string $type): static
-    {
-        $this->type = $type;
 
         return $this;
     }
