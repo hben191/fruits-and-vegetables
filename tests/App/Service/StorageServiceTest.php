@@ -11,6 +11,10 @@ class StorageServiceTest extends TestCase
     {
         $request = file_get_contents('request.json');
 
+        if (!$request) {
+            throw new \Exception('File does not exist.');
+        }
+
         $storageService = new StorageService($request);
 
         $this->assertNotEmpty($storageService->getRequest());

@@ -9,3 +9,6 @@ alias docker-run-stan='docker exec -it php-fpm tools/phpstan/vendor/bin/phpstan 
 
 # Run phpcs
 alias docker-run-cs='docker exec -it php-fpm tools/php-cs-fixer/vendor/bin/php-cs-fixer fix src'
+
+# Run phpunit
+alias docker-run-test='docker exec -it php-fpm bin/phpunit'
