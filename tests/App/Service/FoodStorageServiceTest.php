@@ -49,6 +49,13 @@ class FoodStorageServiceTest extends TestCase
                 "type" => "fruit",
                 "quantity" => 20,
                 "unit" => "kg"
+            ],
+            [
+                "id" => 14,
+                "name" => "Bananas",
+                "type" => "fruit",
+                "quantity" => 100,
+                "unit" => "kg"
             ]
         ];
 
