@@ -69,7 +69,7 @@ class FoodStorageServiceTest extends TestCase
         /**
          * @var FoodStorageService $foodStorageServiceMock
          */
-        $result = $foodStorageServiceMock->createFoodCollections();
+        $result = $foodStorageServiceMock->createFoodCollections(); // @phpstan-ignore-line 
 
         $fruitCollectionComparison = new FruitCollection();
         foreach ($testFruitArray as $testFruit) {

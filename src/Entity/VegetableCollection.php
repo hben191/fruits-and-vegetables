@@ -39,12 +39,39 @@ class VegetableCollection
     }
 
     /**
-     * @return Collection<int, Vegetable>
+     * @return array{
+     *  array{
+     *      id: int,
+     *      name: string,
+     *      weight: int
+     *  }
+     * }
      */
-    public function getVegetables(): Collection
-    {
-        return $this->vegetables;
+    public function list(
+        ?string $name = null,
+        ?int $minWeight = null,
+        ?int $maxWeight = null
+    ): array {
+        return array_values(array_map(fn(Vegetable $vegetable) => [
+            'id' => $vegetable->getId(),
+            'name' => $vegetable->getName(),
+            'weight' => $vegetable->getUnit() === 'kg' ? $vegetable->getQuantity() * 1000 : $vegetable->getQuantity()
+        ], array_filter($this->vegetables->toArray(), function (Vegetable $vegetable) use ($name, $minWeight, $maxWeight) {
+            $weightInGrams = $vegetable->getUnit() === 'kg' ? $vegetable->getQuantity() * 1000 : $vegetable->getQuantity();
+            if ($name && stripos($vegetable->getName(), $name) === false) {
+                return false;
+            }
+            if ($minWeight && $weightInGrams < $minWeight) {
+                return false;
+            }
+            if ($maxWeight && $weightInGrams > $maxWeight) {
+                return false;
+            }
+            return true;
+        })));
+    
     }
+
 
     public function add(Vegetable $vegetable): static
     {

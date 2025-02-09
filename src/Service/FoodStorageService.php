@@ -16,12 +16,17 @@ class FoodStorageService extends StorageService
      *  vegetables: VegetableCollection
      * }
      */
-    public function createFoodCollections(): array
-    {
+    public function createFoodCollections(
+        ?FruitCollection $fruitCollection = null,
+        ?VegetableCollection $vegetableCollection = null,
+    ): array {
         $foodArray = json_decode($this->getRequest(), true);
-        $fruitCollection = new FruitCollection();
-        $vegetableCollection = new VegetableCollection();
-
+        if (null === $fruitCollection) {
+            $fruitCollection = new FruitCollection();
+        }
+        if (null === $vegetableCollection) {
+            $vegetableCollection = new VegetableCollection();
+        }
         foreach ($foodArray as $food) {
             if ('vegetable' == $food['type']) {
                 $vegetable = new Vegetable();

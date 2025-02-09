@@ -2,7 +2,6 @@
 
 namespace App\Entity;
 
-use App\Entity\Interface\FoodCollectionInterface;
 use App\Repository\FruitCollectionRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -20,11 +19,11 @@ class FruitCollection
      * @var Collection<int, Fruit>
      */
     #[ORM\OneToMany(targetEntity: Fruit::class, mappedBy: 'fruitCollection', cascade: ['persist', 'remove'])]
-    private Collection $Fruits;
+    private Collection $fruits;
 
     public function __construct()
     {
-        $this->Fruits = new ArrayCollection();
+        $this->fruits = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -40,17 +39,42 @@ class FruitCollection
     }
 
     /**
-     * @return Collection<int, Fruit>
+     * @return array{
+     *  array{
+     *      id: int,
+     *      name: string,
+     *      weight: int
+     *  }
+     * }
      */
-    public function get(): Collection
-    {
-        return $this->Fruits;
+    public function list(
+        ?string $name = null,
+        ?int $minWeight = null,
+        ?int $maxWeight = null
+    ): array {
+        return array_values(array_map(fn(Fruit $fruit) => [
+            'id' => $fruit->getId(),
+            'name' => $fruit->getName(),
+            'weight' => $fruit->getUnit() === 'kg' ? $fruit->getQuantity() * 1000 : $fruit->getQuantity()
+        ], array_filter($this->fruits->toArray(), function (Fruit $fruit) use ($name, $minWeight, $maxWeight) {
+            $weightInGrams = $fruit->getUnit() === 'kg' ? $fruit->getQuantity() * 1000 : $fruit->getQuantity();
+            if ($name && stripos($fruit->getName(), $name) === false) {
+                return false;
+            }
+            if ($minWeight && $weightInGrams < $minWeight) {
+                return false;
+            }
+            if ($maxWeight && $weightInGrams > $maxWeight) {
+                return false;
+            }
+            return true;
+        })));
     }
 
     public function add(Fruit $fruit): static
     {
-        if (!$this->Fruits->contains($fruit)) {
-            $this->Fruits->add($fruit);
+        if (!$this->fruits->contains($fruit)) {
+            $this->fruits->add($fruit);
             $fruit->setFruitCollection($this);
         }
 
@@ -59,7 +83,7 @@ class FruitCollection
 
     public function remove(Fruit $fruit): static
     {
-        if ($this->Fruits->removeElement($fruit)) {
+        if ($this->fruits->removeElement($fruit)) {
             if ($fruit->getFruitCollection() === $this) {
                 $fruit->setFruitCollection(null);
             }
