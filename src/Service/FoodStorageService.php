@@ -3,15 +3,24 @@
 namespace App\Service;
 
 use App\Entity\Fruit;
+use App\Entity\FruitCollection;
 use App\Entity\Vegetable;
+use App\Entity\VegetableCollection;
 
 class FoodStorageService extends StorageService
 {
-    public function createFoodCollections()
+    /**
+     * This method creates an array for Vegetable and Food Collections front a json input
+     * @return array{
+     *  fruits: FruitCollection,
+     *  vegetables: VegetableCollection
+     * }
+     */
+    public function createFoodCollections(): array
     {
         $foodArray = json_decode($this->getRequest(), true);
-        $fruitCollection = [];
-        $vegetableCollection = [];
+        $fruitCollection = new FruitCollection();
+        $vegetableCollection = new VegetableCollection();
 
         foreach ($foodArray as $food) {
             if ('vegetable' == $food['type']) {
@@ -20,7 +29,7 @@ class FoodStorageService extends StorageService
                         ->setQuantity($food['quantity'])
                         ->setUnit($food['unit']);
 
-                $vegetableCollection[] = $vegetable;
+                $vegetableCollection->add($vegetable);
 
                 // No need to check further if it is a vegetable
                 continue;
@@ -32,7 +41,7 @@ class FoodStorageService extends StorageService
                         ->setQuantity($food['quantity'])
                         ->setUnit($food['unit']);
 
-                $fruitCollection[] = $fruit;
+                $fruitCollection->add($fruit);
             }
         }
 
