@@ -8,5 +8,4 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: VegetableRepository::class)]
 class Vegetable extends AbstractFood
 {
-
 }
