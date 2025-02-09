@@ -6,6 +6,7 @@ use App\Repository\AbstractFoodRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: AbstractFoodRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 #[ORM\InheritanceType('SINGLE_TABLE')]
 #[ORM\DiscriminatorColumn(name: 'type', type: 'string')]
 #[ORM\DiscriminatorMap(

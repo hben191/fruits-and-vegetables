@@ -55,10 +55,15 @@ final class FoodController extends AbstractController
         }
 
         $foodStorageService = new FoodStorageService($requestString);
-        $foodArray = $foodStorageService->createFoodCollections();
+        $foodCollections = $foodStorageService->createFoodCollections();
+
+        $em->persist($foodCollections['fruits']);
+        $em->persist($foodCollections['vegetables']);
+        $em->flush();
 
         return $this->json([
-            $foodArray
+            $foodCollections,
+            Response::HTTP_CREATED
         ]);
     }
 }
