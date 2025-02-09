@@ -8,8 +8,7 @@ class StorageService
 
     public function __construct(
         string $request
-    )
-    {
+    ) {
         $this->request = $request;
     }
 
